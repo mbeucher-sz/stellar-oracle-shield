@@ -8,6 +8,11 @@ on:
         description: "Version to publish (the tag, e.g. v0.1.0)."
         required: true
         type: string
+      wasm-artifact:
+        description: "Workflow artifact holding the released WASM. Empty (manual runs) means build it here."
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -23,7 +28,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # Only useful when we compile the WASM ourselves.
       - uses: Swatinem/rust-cache@v2
+        if: ${{ !inputs.wasm-artifact }}
 
       - name: Resolve owner scope
         run: |
@@ -62,16 +69,28 @@ jobs:
       - name: Install stellar-cli
         uses: stellar/stellar-cli@v27.0.0
 
+      - name: Download the released WASM
+        if: ${{ inputs.wasm-artifact }}
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.wasm-artifact }}
+          path: wasm
+
       - name: Build WASM
+        if: ${{ !inputs.wasm-artifact }}
         run: |
           rustup update
           rustup target add wasm32v1-none
           cargo build-wasm
+          mkdir -p wasm
+          cp target/wasm32v1-none/release/stellar_oracle_shield.wasm wasm/
 
       - name: Generate TypeScript bindings
         run: |
+          WASM=$(find wasm -name '*.wasm' | head -1)
+          echo "Generating bindings from ${WASM}"
           stellar contract bindings typescript \
-            --wasm target/wasm32v1-none/release/stellar_oracle_shield.wasm \
+            --wasm "${WASM}" \
             --output-dir sdk/typescript/packages/generated --overwrite
 
       - name: Set package metadata
