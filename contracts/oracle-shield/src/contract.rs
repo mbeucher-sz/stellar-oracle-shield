@@ -98,7 +98,6 @@ impl Contract {
     pub fn upgrade(env: Env, new_wasm_hash: BytesN<32>) {
         let admin: Address = env.storage().instance().get(&DataKey::Admin).unwrap();
         admin.require_auth();
-
         env.deployer().update_current_contract_wasm(new_wasm_hash);
     }
 }
