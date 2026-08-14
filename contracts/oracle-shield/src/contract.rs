@@ -81,7 +81,7 @@ impl Contract {
     /// `operator_key` - Address
     ///
     /// restricted to admin
-    pub fn set_operator_key(env: Env, operator_key: Address) -> Result<(), Error> {
+    fn set_operator_key(env: Env, operator_key: Address) -> Result<(), Error> {
         let admin = Self::get_admin(&env)?;
         admin.require_auth();
         env.storage()
@@ -208,6 +208,10 @@ const fn parse_version(s: &str) -> u32 {
 impl stellar_oracle_shield_client::Contract for Contract {
     fn set_max_staleness(env: Env, max_staleness: u64) -> Result<(), Error> {
         Contract::set_max_staleness(env, max_staleness)
+    }
+
+    fn set_operator_key(env: Env, operator_key: Address) -> Result<(), Error> {
+        Contract::set_operator_key(env, operator_key)
     }
 
     fn set_score(env: Env, base: Address, quote: Address, score: u32) -> Result<(), Error> {

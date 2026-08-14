@@ -5,7 +5,7 @@ use {
     soroban_sdk::testutils::{
         Address as AddressTrait, AuthorizedFunction, AuthorizedInvocation, Events, Ledger,
     },
-    soroban_sdk::{Env, IntoVal, Symbol, Val, Vec, assert_with_error, events::Event, vec},
+    soroban_sdk::{Env, IntoVal, Symbol, Val, Vec, events::Event, vec},
 };
 
 fn contract_auth_for(
