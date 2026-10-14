@@ -515,6 +515,9 @@ impl stellar_oracle_shield_client::Contract for Contract {
     /// scores for multiple pairs
     /// `operator` - operator generating scores
     /// `scores` - vector of scores with the struct (base, quote, score)
+    /// base - SAC address of an asset
+    /// quote - SAC address of an asset
+    /// score - [0-100] scoring. 0 the more unsafe, 100 the healthier
     ///
     /// restricted to operator
     fn set_scores(

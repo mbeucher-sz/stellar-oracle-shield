@@ -579,8 +579,6 @@ fn test_admin_handover() {
     );
 }
 
-mod quorum;
-
 #[test]
 fn test_set_scores() {
     let env = Env::default();
@@ -651,3 +649,5 @@ fn test_set_scores_atomic() {
     assert_eq!(client.get_score(&base, &quote1), 12);
     assert!(client.try_get_score(&base, &quote2).is_err());
 }
+
+mod quorum;
